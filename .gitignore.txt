@@ -1,6 +1,6 @@
 Debug/
 Minesweeper/Release
-Minesweeper/obj/Release
 Minesweeper/Debug
-Minesweeper/obj/Debug
+Minesweeper/obj/
+Minesweeper/bin/
 Minesweeper.VC.db
