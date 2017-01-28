@@ -27,7 +27,7 @@ namespace Minesweeper
 			Button temp = new Button();
 			temp.Name = "start";
 			temp.Text = "Start game";
-			temp.Size = new Size(110, 20);
+			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
 			temp.Location = new Point(45, 50);
 			temp.UseVisualStyleBackColor = true;
 			temp.Click += new EventHandler(this.start_clicked);
@@ -36,7 +36,7 @@ namespace Minesweeper
 			temp = new Button();
 			temp.Name = "highscores";
 			temp.Text = "Highscores";
-			temp.Size = new Size(110, 20);
+			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
 			temp.Location = new Point(45, 80);
 			temp.UseVisualStyleBackColor = true;
 			buttons.AddLast(temp);
@@ -44,7 +44,7 @@ namespace Minesweeper
 			temp = new Button();
 			temp.Name = "exit";
 			temp.Text = "Exit";
-			temp.Size = new Size(110, 20);
+			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
 			temp.Location = new Point(45, 110);
 			temp.UseVisualStyleBackColor = true;
 			temp.Click += new EventHandler(this.exit_clicked);
@@ -61,13 +61,14 @@ namespace Minesweeper
 
 			//set up control fields
 			Control.MenuForm = this;
-            Control.GameForm = new GameScreen(Constants.Difficulty.Easy);
+            Control.GameForm = new GameScreen();
             Control.GameForm.Hide();
         }
 
 		public void start_clicked(object sender, EventArgs e)
 		{
-			Control.GameForm.Show();
+			Control.GameForm.Diff = Constants.Difficulty.Easy;
+			Control.GameForm.StartGame();
 			this.Hide();
 		}
 
@@ -81,13 +82,5 @@ namespace Minesweeper
 			Control.curState = Constants.GameState.MainMenu;
 			base.OnShown(e);
 		}
-
-		////required to switch state on window shown
-		//public new void Show()
-		//{
-		//	Control.curState = Constants.GameState.MainMenu;
-		//	Console.WriteLine("GameState: " + Control.curState);
-		//	base.Show();
-		//}
 	}
 }
