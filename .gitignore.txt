@@ -1,0 +1,4 @@
+Debug/
+Minesweeper/Release
+Minesweeper/Debug
+Minesweeper.VC.db
