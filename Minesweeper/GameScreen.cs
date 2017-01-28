@@ -12,20 +12,39 @@ namespace Minesweeper
 {
 	public partial class GameScreen : Form
 	{
-		public GameScreen()
+		public GameScreen(Constants.Difficulty dif)
 		{
 			InitializeComponent();
 		}
 
-		private void GameScreen_Load(object sender, EventArgs e)
+		private void GameScreen_Load(object sender, EventArgs e){}
+
+		//method responsible for handling window closing
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+				e.Cancel = true;//cancel the event
+				Control.curState = Constants.GameState.MainMenu;
+                Control.MenuForm.Show();//show menu window
+                this.Hide();//hide current window
+			}
+        }
+
+		protected override void OnShown(EventArgs e)
 		{
-			this.FormClosing += new FormClosingEventHandler(form_closing);
+			Control.curState = Constants.GameState.Game;
+			base.OnShown(e);
 		}
 
-		private void form_closing(object sender, EventArgs e)
-		{
-			Control.MenuForm.Show();
-			this.Dispose();
-		}
+		//public new void Show()
+		//{
+		//	Control.curState = Constants.GameState.Game;
+		//	Console.WriteLine("GameState: " + Control.curState);
+		//	base.Show();
+		//}
+
 	}
 }

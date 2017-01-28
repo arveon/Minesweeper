@@ -8,3 +8,13 @@ c:\users\alex\documents\visual studio 2015\Projects\Minesweeper\Minesweeper\obj\
 c:\users\alex\documents\visual studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
 c:\users\alex\documents\visual studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Menu.resources
 C:\Users\alex\documents\visual studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.GameScreen.resources
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe.config
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.pdb
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csprojResolveAssemblyReference.cache
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.GameScreen.resources
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Menu.resources
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Properties.Resources.resources
+C:\Users\arveon\Documents\Visual Studio 2015\Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.GenerateResource.Cache

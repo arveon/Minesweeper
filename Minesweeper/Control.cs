@@ -9,7 +9,7 @@ namespace Minesweeper
 {
 	static class Control
 	{
-		public static Form CurrentForm;
+		public static Constants.GameState curState;
 		public static Form MenuForm;
 		public static Form GameForm;
 	}

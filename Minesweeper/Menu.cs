@@ -23,6 +23,7 @@ namespace Minesweeper
         {
 			buttons = new LinkedList<Button>();
 
+			#region Setting up menu buttons
 			Button temp = new Button();
 			temp.Name = "start";
 			temp.Text = "Start game";
@@ -48,7 +49,9 @@ namespace Minesweeper
 			temp.UseVisualStyleBackColor = true;
 			temp.Click += new EventHandler(this.exit_clicked);
 			buttons.AddLast(temp);
+			#endregion
 
+			//need to suspend layout when adding elements to the form and resume it after
 			this.SuspendLayout();
 			for (int i = 0; i < buttons.Count; i++)
 			{
@@ -56,14 +59,15 @@ namespace Minesweeper
 			}
 			this.ResumeLayout();
 
+			//set up control fields
 			Control.MenuForm = this;
-			Control.CurrentForm = this;
+            Control.GameForm = new GameScreen(Constants.Difficulty.Easy);
+            Control.GameForm.Hide();
         }
 
 		public void start_clicked(object sender, EventArgs e)
 		{
-			GameScreen screen = new GameScreen();
-			screen.Show();
+			Control.GameForm.Show();
 			this.Hide();
 		}
 
@@ -71,5 +75,19 @@ namespace Minesweeper
 		{
 			Application.Exit();
 		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			Control.curState = Constants.GameState.MainMenu;
+			base.OnShown(e);
+		}
+
+		////required to switch state on window shown
+		//public new void Show()
+		//{
+		//	Control.curState = Constants.GameState.MainMenu;
+		//	Console.WriteLine("GameState: " + Control.curState);
+		//	base.Show();
+		//}
 	}
 }

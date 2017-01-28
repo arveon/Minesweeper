@@ -36,7 +36,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Name = "GameScreen";
-			this.Text = "GameScreen";
+			this.Text = "Minesweeper";
 			this.Load += new System.EventHandler(this.GameScreen_Load);
 			this.ResumeLayout(false);
 
