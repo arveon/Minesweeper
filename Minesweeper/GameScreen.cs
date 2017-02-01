@@ -13,8 +13,10 @@ namespace Minesweeper
 	public partial class GameScreen : Form
 	{
 		public Constants.Difficulty Diff { get; set; }
-		LinkedList<LinkedList<Label>> gameFieldCover;//replace with PictureBox 
-		char[,] gameField;
+		LinkedList<LinkedList<Tile>> gameFieldTiles;//replace with PictureBox 
+		//char[,] gameField;
+
+		Image[] tilesheet;
 
 		public GameScreen()
 		{
@@ -26,6 +28,7 @@ namespace Minesweeper
 
 		public void StartGame()
 		{
+			LoadAssets();
 			int w = 0, h = 0, mines = 0;
 			switch (Diff)
 			{
@@ -46,8 +49,9 @@ namespace Minesweeper
 					break;
 			}
 
+			#region setting up a field backend
 			//set up the game field
-			gameField = new char[w,h];
+			char[,] gameField = new char[w,h];
 			Random rnd = new Random();
 			//add mines to game field
 			for (int i = 0; i < mines; i++)
@@ -100,55 +104,102 @@ namespace Minesweeper
 								numMines++;
 
 						gameField[i, j] = Convert.ToChar(numMines);
-						Console.Write(numMines);
+						//Console.Write(numMines);
 					}
-					else
-						Console.Write('m');
+					//else
+						//Console.Write('m');
 				}
-				Console.WriteLine();
+				//Console.WriteLine();
 			}
+			#endregion
 
+			//for(int i = 0; )
+
+			#region field frontend
 			//add buttons(labels) to the game field
-			gameFieldCover = new LinkedList<LinkedList<Label>>();
+			gameFieldTiles = new LinkedList<LinkedList<Tile>>();
 			for (int i = 0; i < h; i++)
 			{
-				gameFieldCover.AddLast(new LinkedList<Label>());
+				gameFieldTiles.AddLast(new LinkedList<Tile>());
 				for (int j = 0; j < w; j++)
 				{
-					Label temp = new Label();
-					temp.Font = new Font(FontFamily.GenericMonospace, 6, FontStyle.Regular);
-					temp.BackColor = Color.Aqua;
-					temp.AutoSize = false;
-					temp.Padding = new Padding(0);
-					temp.Margin = new Padding(0);
-					temp.Name = j + ";" + i;
-					temp.Text = j + ";" + i;
-					temp.Size = new Size(Constants.GAME_BUTTON_WIDTH, Constants.GAME_BUTTON_HEIGHT);
-
 					int x = 20 + (Constants.GAME_BUTTON_WIDTH * j - 1);
 					int y = 20 + (Constants.GAME_BUTTON_HEIGHT * i - 1);
-					temp.Location = new Point(x, y);
 
-					temp.Click += new EventHandler(tile_clicked);
-					
 
-					gameFieldCover.ElementAt(i).AddLast(temp);
+					Image img = tilesheet[1];
+					Console.Write(i + ":" + j + " " + gameField[i,j] + " ");
+					switch(Convert.ToInt32(gameField[i,j]))
+					{
+						case 0: 
+							img = tilesheet[0];
+							break;
+						case 1: 
+							img = tilesheet[1];
+							break;
+						case 2:
+							img = tilesheet[2];
+							break;
+						case 3:
+							img = tilesheet[3];
+							break;
+						case 4:
+							img = tilesheet[4];
+							break;
+						case 5:
+							img = tilesheet[5];
+							break;
+						case 6:
+							img = tilesheet[6];
+							break;
+						case 7:
+							img = tilesheet[7];
+							break;
+						case 8:
+							img = tilesheet[8];
+							break;
+						case 'm': 
+							img = tilesheet[10];
+							break;
+						//default:
+						//	img = tilesheet[0];
+						//	Console.WriteLine("DEFAULT");
+						//	break;
+					}
+
+					gameFieldTiles.ElementAt(i).AddLast(new Tile(new Point(x, y), new Size(Constants.GAME_BUTTON_WIDTH, Constants.GAME_BUTTON_HEIGHT), gameField[i,j], img, tilesheet[11], tilesheet[9]));
+					//Console.WriteLine("button_created");
 				}
 			}
+			#endregion
 
 			//add game field to screen
 			this.SuspendLayout();
-			foreach(LinkedList<Label> l in gameFieldCover)
-				foreach(Label b in l)
-					Controls.Add(b);
+			foreach(LinkedList<Tile> l in gameFieldTiles)
+				foreach (Tile b in l)
+				{
+					Controls.Add(b.Button);
+					Controls.Add(b.Image_Container);
+				}
 			this.ResumeLayout();
 			this.Show();
 		}
 
-		private void tile_clicked(object src, EventArgs e)
+		private void LoadAssets()
 		{
-			Label b = (Label)src;
-			b.Hide();
+			tilesheet = new Image[12];
+			tilesheet[0] = Image.FromFile("assets/zero.png");
+			tilesheet[1] = Image.FromFile("assets/one.png");
+			tilesheet[2] = Image.FromFile("assets/two.png");
+			tilesheet[3] = Image.FromFile("assets/three.png");
+			tilesheet[4] = Image.FromFile("assets/four.png");
+			tilesheet[5] = Image.FromFile("assets/five.png");
+			tilesheet[6] = Image.FromFile("assets/six.png");
+			tilesheet[7] = Image.FromFile("assets/seven.png");
+			tilesheet[8] = Image.FromFile("assets/eight.png");
+			tilesheet[9] = Image.FromFile("assets/flag.png");
+			tilesheet[10] = Image.FromFile("assets/mine.png");
+			tilesheet[11] = Image.FromFile("assets/empty.png");
 		}
 
 		//method responsible for handling window closing
