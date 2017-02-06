@@ -34,7 +34,18 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 262);
+
+			switch(this.Diff)
+			{
+				case Constants.Difficulty.Easy:
+					this.ClientSize = new System.Drawing.Size(Constants.EASY_SCREEN_WIDTH, Constants.EASY_SCREEN_HEIGHT);
+					break;
+				case Constants.Difficulty.Medium:
+					this.ClientSize = new System.Drawing.Size(Constants.EASY_SCREEN_WIDTH, Constants.EASY_SCREEN_HEIGHT);
+					break;
+			}
+			
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "GameScreen";
 			this.Text = "Minesweeper";
 			this.Load += new System.EventHandler(this.GameScreen_Load);

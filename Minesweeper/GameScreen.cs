@@ -13,8 +13,8 @@ namespace Minesweeper
 	public partial class GameScreen : Form
 	{
 		public Constants.Difficulty Diff { get; set; }
-		LinkedList<LinkedList<Tile>> gameFieldTiles;//replace with PictureBox 
-		//char[,] gameField;
+		LinkedList<LinkedList<Tile>> gameFieldTiles;
+		LinkedList<Point> mineCoords;
 
 		Image[] tilesheet;
 
@@ -28,6 +28,7 @@ namespace Minesweeper
 
 		public void StartGame()
 		{
+			Console.WriteLine("gameReset");
 			LoadAssets();
 			int w = 0, h = 0, mines = 0;
 			switch (Diff)
@@ -52,21 +53,24 @@ namespace Minesweeper
 			#region setting up a field backend
 			//set up the game field
 			char[,] gameField = new char[w,h];
+			mineCoords = new LinkedList<Point>();
 			Random rnd = new Random();
 			//add mines to game field
 			for (int i = 0; i < mines; i++)
 			{
-				
 				int x, y;
 				x = rnd.Next(0, w);
 				y = rnd.Next(0, h);
 				gameField[y, x] = 'm';
+				mineCoords.AddLast(new Point(x, y));
+				
 			}
 			//set up the rest of the field
 			for(int i = 0; i < h; i++)
 			{
 				for(int j = 0; j < w; j++)
 				{
+					//if it's not a mine, count number of mines around it
 					if (gameField[i, j] != 'm')
 					{
 						int numMines = 0;
@@ -104,16 +108,10 @@ namespace Minesweeper
 								numMines++;
 
 						gameField[i, j] = Convert.ToChar(numMines);
-						//Console.Write(numMines);
 					}
-					//else
-						//Console.Write('m');
 				}
-				//Console.WriteLine();
 			}
 			#endregion
-
-			//for(int i = 0; )
 
 			#region field frontend
 			//add buttons(labels) to the game field
@@ -126,13 +124,14 @@ namespace Minesweeper
 					int x = 20 + (Constants.GAME_BUTTON_WIDTH * j - 1);
 					int y = 20 + (Constants.GAME_BUTTON_HEIGHT * i - 1);
 
-
+					bool tileEmpty = false;
+					bool mine = false;
 					Image img = tilesheet[1];
-					Console.Write(i + ":" + j + " " + gameField[i,j] + " ");
 					switch(Convert.ToInt32(gameField[i,j]))
 					{
 						case 0: 
 							img = tilesheet[0];
+							tileEmpty = true;
 							break;
 						case 1: 
 							img = tilesheet[1];
@@ -160,15 +159,20 @@ namespace Minesweeper
 							break;
 						case 'm': 
 							img = tilesheet[10];
+							mine = true;
 							break;
-						//default:
-						//	img = tilesheet[0];
-						//	Console.WriteLine("DEFAULT");
-						//	break;
+						default:
+							img = tilesheet[0];
+							tileEmpty = true;
+							Console.WriteLine("SOME ERROR WHILE CREATING FIELD");
+							break;
 					}
 
-					gameFieldTiles.ElementAt(i).AddLast(new Tile(new Point(x, y), new Size(Constants.GAME_BUTTON_WIDTH, Constants.GAME_BUTTON_HEIGHT), gameField[i,j], img, tilesheet[11], tilesheet[9]));
-					//Console.WriteLine("button_created");
+					Tile temp = new Tile(new Point(x, y), new Size(Constants.GAME_BUTTON_WIDTH, Constants.GAME_BUTTON_HEIGHT), gameField[i, j], img, tilesheet[11], tilesheet[9], tilesheet[12], tileEmpty, new Point(j, i), mine);
+					gameFieldTiles.ElementAt(i).AddLast(temp);
+					temp.EmptyOpenedEvent += new EventHandler(OpenEmptyTiles);
+					temp.MineOpenedEvent += new EventHandler(MineOpened);
+					temp.TileClickedEvent += new EventHandler(CheckWinCondition);
 				}
 			}
 			#endregion
@@ -187,7 +191,7 @@ namespace Minesweeper
 
 		private void LoadAssets()
 		{
-			tilesheet = new Image[12];
+			tilesheet = new Image[13];
 			tilesheet[0] = Image.FromFile("assets/zero.png");
 			tilesheet[1] = Image.FromFile("assets/one.png");
 			tilesheet[2] = Image.FromFile("assets/two.png");
@@ -200,6 +204,7 @@ namespace Minesweeper
 			tilesheet[9] = Image.FromFile("assets/flag.png");
 			tilesheet[10] = Image.FromFile("assets/mine.png");
 			tilesheet[11] = Image.FromFile("assets/empty.png");
+			tilesheet[12] = Image.FromFile("assets/mine_blown.png");
 		}
 
 		//method responsible for handling window closing
@@ -212,7 +217,7 @@ namespace Minesweeper
 				e.Cancel = true;//cancel the event
 				Control.curState = Constants.GameState.MainMenu;
                 Control.MenuForm.Show();//show menu window
-                this.Hide();//hide current window
+                this.Dispose();//hide current window
 			}
         }
 
@@ -222,5 +227,85 @@ namespace Minesweeper
 			base.OnShown(e);
 		}
 
+		protected void OpenEmptyTiles(object sender, EventArgs args)
+		{
+			OpenEmptyRecursive((Tile)sender);
+			foreach(LinkedList<Tile> l in gameFieldTiles)
+			{
+				foreach(Tile t in l)
+				{
+					t.BeingProcessed = false;
+				}
+			}
+		}
+
+		private void OpenEmptyRecursive(Tile tile)
+		{
+			if (!tile.isEmpty())
+			{
+				tile.Open();
+				return;
+			}
+			else if (tile.BeingProcessed)
+				return;
+
+			tile.BeingProcessed = true;
+
+			if(tile.GridCoords.X - 1 > -1)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y).ElementAt(tile.GridCoords.X-1));
+			if(tile.GridCoords.X - 1 > -1 && tile.GridCoords.Y - 1 > -1)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y-1).ElementAt(tile.GridCoords.X - 1));
+			if (tile.GridCoords.Y - 1 > -1)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y - 1).ElementAt(tile.GridCoords.X));
+			if (tile.GridCoords.Y - 1 > -1 && tile.GridCoords.X + 1 < gameFieldTiles.ElementAt(1).Count)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y - 1).ElementAt(tile.GridCoords.X + 1));
+			if (tile.GridCoords.X + 1 < gameFieldTiles.ElementAt(1).Count)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y).ElementAt(tile.GridCoords.X + 1));
+			if (tile.GridCoords.X + 1 < gameFieldTiles.ElementAt(1).Count && tile.GridCoords.Y + 1 < gameFieldTiles.Count)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y + 1).ElementAt(tile.GridCoords.X + 1));
+			if (tile.GridCoords.X < gameFieldTiles.ElementAt(1).Count && tile.GridCoords.Y + 1 < gameFieldTiles.ElementAt(1).Count)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y + 1).ElementAt(tile.GridCoords.X));
+			if (tile.GridCoords.X - 1 > -1 && tile.GridCoords.Y + 1 < gameFieldTiles.ElementAt(1).Count)
+				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y + 1).ElementAt(tile.GridCoords.X - 1));
+
+			tile.Open();
+		}
+
+		protected void MineOpened(object sender, EventArgs args)
+		{
+			foreach(Point p in mineCoords)
+			{
+				gameFieldTiles.ElementAt(p.Y).ElementAt(p.X).Open();
+			}
+			Control.curState = Constants.GameState.GameOver;
+			DialogResult gameOverWindow = MessageBox.Show("You lost. Try again?", "Game over", MessageBoxButtons.YesNo);
+			if(gameOverWindow == DialogResult.Yes)
+			{
+				//Control.curState = Constants.GameState.Game;
+				Control.ResetGame();
+			}
+			else
+			{
+				this.Dispose();
+				Control.MenuForm.Show();
+			}
+		}
+
+		protected void CheckWinCondition(object sender, EventArgs args)
+		{
+			
+			foreach(LinkedList<Tile> l in gameFieldTiles)
+				foreach(Tile t in l)
+				{
+					if (!t.isMine && !t.isOpen())
+						return;
+				}
+
+			DialogResult winScr = MessageBox.Show("Congratulations, you won!");
+			Control.curState = Constants.GameState.MainMenu;
+			this.Dispose();
+			Control.MenuForm.Show();
+		}
 	}
+
 }

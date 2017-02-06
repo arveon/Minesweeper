@@ -13,6 +13,7 @@ namespace Minesweeper
     public partial class Menu : Form
     {
 		LinkedList<Button> buttons;
+		DifficultySlider difficulty;
 
 		public Menu()
         {
@@ -22,6 +23,8 @@ namespace Minesweeper
         private void Menu_Load(object sender, EventArgs e)
         {
 			buttons = new LinkedList<Button>();
+			difficulty = new DifficultySlider(new Point(Constants.DIFFICULTY_BAR_X, Constants.DIFFICULTY_BAR_Y), new Size(Constants.DIFFICULTY_BAR_WIDTH, Constants.DIFFICULTY_BAR_HEIGHT), this);
+
 
 			#region Setting up menu buttons
 			Button temp = new Button();
@@ -67,6 +70,7 @@ namespace Minesweeper
 
 		public void start_clicked(object sender, EventArgs e)
 		{
+			Control.GameForm = new GameScreen();
 			Control.GameForm.Diff = Constants.Difficulty.Easy;
 			Control.GameForm.StartGame();
 			this.Hide();

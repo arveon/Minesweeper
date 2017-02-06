@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Control.cs" />
+    <Compile Include="DifficultySlider.cs" />
     <Compile Include="GameScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +99,7 @@
     <Content Include="assets\flag.png" />
     <Content Include="assets\four.png" />
     <Content Include="assets\mine.png" />
+    <Content Include="assets\mine_blown.png" />
     <Content Include="assets\one.png" />
     <Content Include="assets\seven.png" />
     <Content Include="assets\six.png" />

@@ -15,12 +15,27 @@ namespace Minesweeper
 		public const int MENU_BUTTON_WIDTH = 110;
 		public const int MENU_BUTTON_HEIGHT = 20;
 
+		public const int DIFFICULTY_BAR_X = 20;
+		public const int DIFFICULTY_BAR_Y = 200;
+
+		public const int DIFFICULTY_BAR_WIDTH = 100;
+		public const int DIFFICULTY_BAR_HEIGHT = 20;
+
 		public const int GAME_BUTTON_HEIGHT = 16;
 		public const int GAME_BUTTON_WIDTH = 16;
+
+		public const int EASY_SCREEN_WIDTH = 300;
+		public const int EASY_SCREEN_HEIGHT = 300;
+
+		public const int MEDIUM_SCREEN_WIDTH = 500;
+		public const int MEDIUM_SCREEN_HEIGHT = 500;
+
+		public const int HARD_SCREEN_WIDTH = 800;
+		public const int HARD_SCREEN_HEIGHT = 800;
 		#endregion
 
 		#region system	
-		public enum GameState { MainMenu = 0, Game = 1, Pause = 2, Highscores = 3 };
+		public enum GameState { MainMenu = 0, Game = 1, Pause = 2, Highscores = 3, GameOver = 4 };
 		#endregion
 
 		#region game specific
