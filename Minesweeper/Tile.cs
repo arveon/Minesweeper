@@ -25,6 +25,7 @@ namespace Minesweeper
 		public event EventHandler MineOpenedEvent;
 		public event EventHandler EmptyOpenedEvent;
 		public event EventHandler TileClickedEvent;
+		public event EventHandler TileMarkedEvent;
 
 		Constants.TileState state;
 
@@ -62,34 +63,25 @@ namespace Minesweeper
 				switch (args.Button)
 				{
 					case MouseButtons.Right:
-						if (state == Constants.TileState.Hidden)
-						{
-							state = Constants.TileState.Marked;
-							Button.Image = flag;
-						}
-						else
-						{
-							state = Constants.TileState.Hidden;
-							Button.Image = hidden;
-						}
+						TileMarkedEvent(this, null);
 						break;
 					case MouseButtons.Left:
 						if (state != Constants.TileState.Marked)
 						{
 							state = Constants.TileState.Revealed;
 							Button.Visible = false;
-						}
 
-						if (empty)
-							EmptyOpenedEvent(this, null);
-						else if (isMine)
-						{
-							Image_Container.Image = mine_blown;
-							MineOpenedEvent(this, null);
-						}
+							if (empty)
+								EmptyOpenedEvent(this, null);
+							else if (isMine)
+							{
+								Image_Container.Image = mine_blown;
+								MineOpenedEvent(this, null);
+							}
 
-						TileClickedEvent(this, null);
-						break;
+							TileClickedEvent(this, null);
+						}
+							break;
 				}
 			}
 		}
@@ -113,6 +105,20 @@ namespace Minesweeper
 		{
 			state = Constants.TileState.Revealed;
 			Button.Visible = false;
+		}
+
+		public void Mark()
+		{
+			if (state != Constants.TileState.Hidden)
+			{
+				state = Constants.TileState.Hidden;
+				Button.Image = hidden;
+			}
+			else
+			{
+				state = Constants.TileState.Marked;
+				Button.Image = flag;
+			}
 		}
 
 	}

@@ -43,6 +43,7 @@ namespace Minesweeper
 			increase.Text = ">";
 			increase.Visible = true;
 			increase.Name = "increase";
+			increase.Click += new EventHandler(valueChanged);
 
 			display = new Label();
 			display.Text = values[current];
@@ -59,19 +60,29 @@ namespace Minesweeper
 			owner.ResumeLayout();
 		}
 
+		public int getDifficulty()
+		{
+			return current;
+		}
 
 		protected void valueChanged(object sender, EventArgs args)
 		{
 			Button temp = (Button)sender;
-			
-			if(temp.Name == "increase")
-				current = (current == 2) ? current++ : current;	
-			else if(temp.Name == "decrease")
-				current = (current == 0) ? current : current--;
 
+			//change the value
+			if (temp.Name == "increase")
+				current++;
+			else if (temp.Name == "decrease")
+				current--;
+
+			//cap the variable
+			current = (current < 0) ? 0 : current;
+			current = (current > 2) ? 2 : current;
+
+			//update the display
 			display.Text = values[current];
 
-			//DifficultyChanged(this, null);
+			DifficultyChanged(this, null);
 		}
 	}
 }

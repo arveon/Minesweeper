@@ -12,6 +12,8 @@ namespace Minesweeper
 		public static Constants.GameState curState;
 		public static Menu MenuForm;
 		public static GameScreen GameForm;
+		public static Constants.Difficulty dif;
+		public static bool gameLost;
 
 		public static void ResetGame()
 		{

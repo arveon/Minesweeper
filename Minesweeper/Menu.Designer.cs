@@ -35,6 +35,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.ClientSize = new System.Drawing.Size(Constants.MENU_FORM_WIDTH, Constants.MENU_FORM_HEIGHT);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;

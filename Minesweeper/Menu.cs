@@ -66,12 +66,14 @@ namespace Minesweeper
 			Control.MenuForm = this;
             Control.GameForm = new GameScreen();
             Control.GameForm.Hide();
+
+			difficulty.DifficultyChanged += new EventHandler(updateDifficulty);
         }
 
 		public void start_clicked(object sender, EventArgs e)
 		{
 			Control.GameForm = new GameScreen();
-			Control.GameForm.Diff = Constants.Difficulty.Easy;
+			//Control.GameForm.Diff = Constants.Difficulty.Easy;
 			Control.GameForm.StartGame();
 			this.Hide();
 		}
@@ -85,6 +87,23 @@ namespace Minesweeper
 		{
 			Control.curState = Constants.GameState.MainMenu;
 			base.OnShown(e);
+		}
+
+		protected void updateDifficulty(object sender, EventArgs args)
+		{
+			int newdif = difficulty.getDifficulty();
+			switch(newdif)
+			{
+				case 0: 
+					Control.dif = Constants.Difficulty.Easy;
+					break;
+				case 1:
+					Control.dif = Constants.Difficulty.Medium;
+					break;
+				case 2:
+					Control.dif = Constants.Difficulty.Hard;
+					break;
+			}
 		}
 	}
 }
