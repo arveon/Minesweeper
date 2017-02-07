@@ -24,7 +24,14 @@ namespace Minesweeper
 		}
 
 		private void GameScreen_Load(object sender, EventArgs e)
-		{}
+		{
+			switch(Diff)
+			{
+				case Constants.Difficulty.Easy:
+
+					break;
+			}
+		}
 
 		public void StartGame()
 		{

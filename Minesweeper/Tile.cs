@@ -28,7 +28,7 @@ namespace Minesweeper
 			Button.Location = coords;
 			Button.Size = dimensions;
 			Button.Name = Convert.ToString(value);
-			Button.Visible = true;
+			Button.Visible = false;
 			Button.MouseClick += new MouseEventHandler(tileClicked);
 
 			state = Constants.TileState.Hidden;
@@ -41,9 +41,7 @@ namespace Minesweeper
 		}
 
 		protected void tileClicked(object src, MouseEventArgs args)
-		{
-			//Console.WriteLine("happened");
-			
+		{	
 			switch(args.Button)
 			{
 				case MouseButtons.Right:

@@ -28,3 +28,13 @@ C:\Users\aleksejsloginovs\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.
 C:\Users\aleksejsloginovs\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Menu.resources
 C:\Users\aleksejsloginovs\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Properties.Resources.resources
 C:\Users\aleksejsloginovs\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.GenerateResource.Cache
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe.config
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\bin\Debug\Minesweeper.pdb
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csprojResolveAssemblyReference.cache
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.GameScreen.resources
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Menu.resources
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Properties.Resources.resources
+C:\Users\arveon\Desktop\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.GenerateResource.Cache

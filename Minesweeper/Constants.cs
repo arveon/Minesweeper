@@ -15,6 +15,10 @@ namespace Minesweeper
 		public const int MENU_BUTTON_WIDTH = 110;
 		public const int MENU_BUTTON_HEIGHT = 20;
 
+		public const int GAME_FORM_EASY_WIDTH = 600;
+		public const int GAME_FORM_EASY_HEIGHT = 500;
+
+
 		public const int GAME_BUTTON_HEIGHT = 16;
 		public const int GAME_BUTTON_WIDTH = 16;
 		#endregion
