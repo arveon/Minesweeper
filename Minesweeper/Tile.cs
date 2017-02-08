@@ -58,14 +58,17 @@ namespace Minesweeper
 
 		protected void tileClicked(object src, MouseEventArgs args)
 		{
+			
 			if (Control.curState != Constants.GameState.GameOver)
 			{
 				switch (args.Button)
 				{
 					case MouseButtons.Right:
+						Control.rightclick.Play();
 						TileMarkedEvent(this, null);
 						break;
 					case MouseButtons.Left:
+						Control.button_click.Play();
 						if (state != Constants.TileState.Marked)
 						{
 							state = Constants.TileState.Revealed;
@@ -78,6 +81,7 @@ namespace Minesweeper
 							}
 							else if (isMine)
 							{
+								Control.explosion.Play();
 								Image_Container.Image = mine_blown;
 								MineOpenedEvent(this, null);
 							}
@@ -108,6 +112,7 @@ namespace Minesweeper
 		{
 			state = Constants.TileState.Revealed;
 			Button.Visible = false;
+			TileClickedEvent(this, null);
 		}
 
 		public void Mark()

@@ -362,8 +362,6 @@ namespace Minesweeper
 			{
 				gameFieldTiles.ElementAt(p.Y).ElementAt(p.X).Open();
 			}
-			
-
 		}
 
 		protected void CheckWinCondition(object sender, EventArgs args)
@@ -380,7 +378,17 @@ namespace Minesweeper
 			resetButton.Image = button_img[2];
 			Control.curState = Constants.GameState.GameOver;
 			timer.Enabled = false;
-			DialogResult winScr = MessageBox.Show("Congratulations, you won in " + secondsPassed + " seconds!");
+
+			int score =(int)((float)mines / secondsPassed * 100);
+			
+			if (Control.records.isHighscore(score))
+			{
+				string text = "You set a new highscore of " + score + ".\nPlease, enter your name:";
+				string name = Microsoft.VisualBasic.Interaction.InputBox(text, "New highscore set!", "unknown");
+				Control.records.addHighscore(score, name);
+				Control.records.saveHighscores();
+			}
+
 		}
 
 		protected void ApproveTileMark(object sender, EventArgs args)
@@ -412,6 +420,11 @@ namespace Minesweeper
 		protected void resetGame(object sender, EventArgs args)
 		{
 			Control.ResetGame();
+		}
+
+		protected override void OnFormClosed(FormClosedEventArgs e)
+		{
+			base.OnFormClosed(e);
 		}
 	}
 

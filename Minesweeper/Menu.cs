@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace Minesweeper
 {
@@ -17,6 +18,12 @@ namespace Minesweeper
 
 		public Menu()
         {
+			Control.records = new Highscores("highscores.txt");
+			Control.records.loadHighscores();
+
+			Control.button_click = new SoundPlayer("sounds/button_click.wav");
+			Control.rightclick = new SoundPlayer("sounds/rightclick.wav");
+			Control.explosion = new SoundPlayer("sounds/explosion.wav");
             InitializeComponent();
         }
 
@@ -42,15 +49,26 @@ namespace Minesweeper
 			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
 			temp.Location = new Point(45, 80);
 			temp.UseVisualStyleBackColor = true;
+			temp.Click += new EventHandler(DisplayHighscores);
 			buttons.AddLast(temp);
 
 			temp = new Button();
 			temp.Name = "exit";
 			temp.Text = "Exit";
 			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
-			temp.Location = new Point(45, 110);
+			temp.Location = new Point(45, 140);
 			temp.UseVisualStyleBackColor = true;
 			temp.Click += new EventHandler(this.exit_clicked);
+			buttons.AddLast(temp);
+
+
+			temp = new Button();
+			temp.Name = "about";
+			temp.Text = "About";
+			temp.Size = new Size(Constants.MENU_BUTTON_WIDTH, Constants.MENU_BUTTON_HEIGHT);
+			temp.Location = new Point(45, 110);
+			temp.UseVisualStyleBackColor = true;
+			temp.Click += new EventHandler(this.about_clicked);
 			buttons.AddLast(temp);
 			#endregion
 
@@ -72,14 +90,15 @@ namespace Minesweeper
 
 		public void start_clicked(object sender, EventArgs e)
 		{
+			Control.button_click.Play();
 			Control.GameForm = new GameScreen();
-			//Control.GameForm.Diff = Constants.Difficulty.Easy;
 			Control.GameForm.StartGame();
 			this.Hide();
 		}
 
 		public void exit_clicked(object sender, EventArgs e)
 		{
+			Control.button_click.Play();
 			Application.Exit();
 		}
 
@@ -91,6 +110,7 @@ namespace Minesweeper
 
 		protected void updateDifficulty(object sender, EventArgs args)
 		{
+			Control.button_click.Play();
 			int newdif = difficulty.getDifficulty();
 			switch(newdif)
 			{
@@ -104,6 +124,19 @@ namespace Minesweeper
 					Control.dif = Constants.Difficulty.Hard;
 					break;
 			}
+		}
+
+		protected void DisplayHighscores(object sender, EventArgs args)
+		{
+			Control.button_click.Play();
+			MessageBox.Show(Control.records.getHighscoresLine(), "Highscores");
+			//Control.records.printHighscores();
+		}
+
+		protected void about_clicked(object sender, EventArgs args)
+		{
+			Control.button_click.Play();
+			MessageBox.Show("A replica of Windows Minesweeper game.\nCreated by Aleksejs Loginovs as a university assignment.", "About");
 		}
 	}
 }

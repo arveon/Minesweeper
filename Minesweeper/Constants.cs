@@ -54,6 +54,7 @@ namespace Minesweeper
 
 		#region system	
 		public enum GameState { MainMenu = 0, Game = 1, Pause = 2, Highscores = 3, GameOver = 4 };
+		public static int HIGHSCORES_NUMBER = 5;
 		#endregion
 
 		#region game specific
