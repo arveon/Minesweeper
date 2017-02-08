@@ -13,6 +13,7 @@ namespace Minesweeper
     public partial class Menu : Form
     {
 		LinkedList<Button> buttons;
+		DifficultySlider difficulty;
 
 		public Menu()
         {
@@ -22,6 +23,8 @@ namespace Minesweeper
         private void Menu_Load(object sender, EventArgs e)
         {
 			buttons = new LinkedList<Button>();
+			difficulty = new DifficultySlider(new Point(Constants.DIFFICULTY_BAR_X, Constants.DIFFICULTY_BAR_Y), new Size(Constants.DIFFICULTY_BAR_WIDTH, Constants.DIFFICULTY_BAR_HEIGHT), this);
+
 
 			#region Setting up menu buttons
 			Button temp = new Button();
@@ -63,11 +66,14 @@ namespace Minesweeper
 			Control.MenuForm = this;
             Control.GameForm = new GameScreen();
             Control.GameForm.Hide();
+
+			difficulty.DifficultyChanged += new EventHandler(updateDifficulty);
         }
 
 		public void start_clicked(object sender, EventArgs e)
 		{
-			Control.GameForm.Diff = Constants.Difficulty.Easy;
+			Control.GameForm = new GameScreen();
+			//Control.GameForm.Diff = Constants.Difficulty.Easy;
 			Control.GameForm.StartGame();
 			this.Hide();
 		}
@@ -81,6 +87,23 @@ namespace Minesweeper
 		{
 			Control.curState = Constants.GameState.MainMenu;
 			base.OnShown(e);
+		}
+
+		protected void updateDifficulty(object sender, EventArgs args)
+		{
+			int newdif = difficulty.getDifficulty();
+			switch(newdif)
+			{
+				case 0: 
+					Control.dif = Constants.Difficulty.Easy;
+					break;
+				case 1:
+					Control.dif = Constants.Difficulty.Medium;
+					break;
+				case 2:
+					Control.dif = Constants.Difficulty.Hard;
+					break;
+			}
 		}
 	}
 }
