@@ -36,6 +36,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
 			switch (Control.dif)
 			{
 				case Constants.Difficulty.Easy:

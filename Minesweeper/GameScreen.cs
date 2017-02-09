@@ -10,32 +10,35 @@ using System.Windows.Forms;
 
 namespace Minesweeper
 {
+	//class that represents the game form. also controls the game flow
 	public partial class GameScreen : Form
 	{
-		public Constants.Difficulty Diff { get; set; }
-		LinkedList<LinkedList<Tile>> gameFieldTiles;
-		LinkedList<Point> mineCoords;
+		LinkedList<LinkedList<Tile>> gameFieldTiles;//2d tile array
+		LinkedList<Point> mineCoords;//list of coordinates of all mines on the field
 
-		Timer timer;
+		Timer timer;//timer to update game time
 
-		int remainingFlags;
+		int remainingFlags;//number of flags that user is still able to put on the field
 
-		Image[] tilesheet;
-		Image[] button_img;
+		Image[] tilesheet;//different tile images
+		Image[] button_img;//images that the reset button can take
 
-		int secondsPassed;
+		int secondsPassed;//counter for how many seconds have passed
+		//top of the UI elements
 		Label timer_display;
 		Button resetButton;
 		Label remainingFlags_l;
-
+		
+		//width, height of the field (in tiles) and number of mines on it
 		int w = 0, h = 0, mines = 0;
 
+		//default constructor
 		public GameScreen()
 		{
 			InitializeComponent();
 			LoadAssets();
-			Diff = Control.dif;
-			switch (Diff)
+			//depending on the difficulty, set the grid size and number of mines
+			switch (Control.dif)
 			{
 				case Constants.Difficulty.Easy:
 					w = Constants.EASY_WIDTH;
@@ -58,6 +61,7 @@ namespace Minesweeper
 		private void GameScreen_Load(object sender, EventArgs e)
 		{}
 
+		//method responsible for starting and setting up the game
 		public void StartGame()
 		{
 			
@@ -65,6 +69,7 @@ namespace Minesweeper
 			//set up the top UI bar
 			secondsPassed = 0;
 			remainingFlags = mines;
+			//init timer
 			timer = new Timer();
 			timer.Interval = 1000;
 			timer.Tick += new EventHandler(TimerTick);
@@ -77,24 +82,24 @@ namespace Minesweeper
 			//add mines to game field
 			for (int i = 0; i < mines; i++)
 			{
+				//generate random coordinates for the mine
 				int x, y;
 				x = rnd.Next(0, w);
 				y = rnd.Next(0, h);
-
+				//check if mine already exists there
 				foreach (Point p in mineCoords)
-				{
-					if (p.X == x && p.Y == y)
+					if (p.X == x && p.Y == y)//if mine already exists under these coordinates, reduce i and go to the next iteration of the loop
 					{
 						i--;
 						continue;
 					}
-				}
-
+				
+				//add mine to game field and to list of mines
 				gameField[y, x] = 'm';
 				mineCoords.AddLast(new Point(x, y));
 			}
 
-			//set up the rest of the field
+			//set up the rest of the field values depending on the mine locations
 			for(int i = 0; i < h; i++)
 			{
 				for(int j = 0; j < w; j++)
@@ -102,7 +107,7 @@ namespace Minesweeper
 					//if it's not a mine, count number of mines around it
 					if (gameField[i, j] != 'm')
 					{
-						int numMines = 0;
+						int numMines = 0;//number of mines around this tile
 
 						if (i != 0)
 							if(gameField[i - 1, j] == 'm')
@@ -135,7 +140,7 @@ namespace Minesweeper
 						if (i != h-1 && j != w - 1)
 							if(gameField[i + 1, j + 1] == 'm')
 								numMines++;
-
+						//add the value to the game field grid
 						gameField[i, j] = Convert.ToChar(numMines);
 					}
 				}
@@ -143,19 +148,22 @@ namespace Minesweeper
 			#endregion
 
 			#region field frontend
-			//add tiles to the game field
-			gameFieldTiles = new LinkedList<LinkedList<Tile>>();
+			//add tiles to the game field depending on the grid values
+			gameFieldTiles = new LinkedList<LinkedList<Tile>>();//initialise the 2d list
 			for (int i = 0; i < h; i++)
 			{
-				gameFieldTiles.AddLast(new LinkedList<Tile>());
+				gameFieldTiles.AddLast(new LinkedList<Tile>());//initialise the 2nd dimension of the list
 				for (int j = 0; j < w; j++)
 				{
+					//calculate the form coordinates of the buttons
 					int x = Constants.GRID_OFFSET_X + (Constants.GAME_BUTTON_WIDTH * j - 1);
 					int y = Constants.GRID_OFFSET_Y + (Constants.GAME_BUTTON_HEIGHT * i - 1);
 
+					//set up tile descriptor variables
 					bool tileEmpty = false;
 					bool mine = false;
 					Image img = tilesheet[1];
+					//set values depending on the value of the tile at given place in game field
 					switch(Convert.ToInt32(gameField[i,j]))
 					{
 						case 0: 
@@ -190,17 +198,18 @@ namespace Minesweeper
 							img = tilesheet[10];
 							mine = true;
 							break;
-						default:
+						default://should never occur unless there's errors in the code. visual studio complains about variables not being initialised if taken out
 							img = tilesheet[0];
 							tileEmpty = true;
 							Console.WriteLine("SOME ERROR WHILE CREATING FIELD");
 							break;
 					}
 
+					//create new tile with given values
 					Tile temp = new Tile(new Point(x, y), new Size(Constants.GAME_BUTTON_WIDTH, Constants.GAME_BUTTON_HEIGHT), gameField[i, j], img, tilesheet[11], tilesheet[9], tilesheet[12], tileEmpty, new Point(j, i), mine);
-					gameFieldTiles.ElementAt(i).AddLast(temp);
+					gameFieldTiles.ElementAt(i).AddLast(temp);//add tile to given field
 
-					//subscribe to appropriate events
+					//subscribe form to all events raised by the tile
 					temp.EmptyOpenedEvent += new EventHandler(OpenEmptyTiles);
 					temp.MineOpenedEvent += new EventHandler(MineOpened);
 					temp.TileClickedEvent += new EventHandler(CheckWinCondition);
@@ -209,7 +218,7 @@ namespace Minesweeper
 			}
 			#endregion
 
-			//add game field to form
+			//add game field and UI elements to form
 			this.SuspendLayout();
 			foreach(LinkedList<Tile> l in gameFieldTiles)
 				foreach (Tile b in l)
@@ -224,8 +233,10 @@ namespace Minesweeper
 			this.Show();
 		}
 
+		//method responsible for loading all graphical assets used in the game
 		private void LoadAssets()
 		{
+			//tile assets
 			tilesheet = new Image[13];
 			tilesheet[0] = Image.FromFile("assets/zero.png");
 			tilesheet[1] = Image.FromFile("assets/one.png");
@@ -241,19 +252,23 @@ namespace Minesweeper
 			tilesheet[11] = Image.FromFile("assets/empty.png");
 			tilesheet[12] = Image.FromFile("assets/mine_blown.png");
 
+			//reset button assets
 			button_img = new Image[3];
 			button_img[0] = Image.FromFile("assets/reset_smile.png");
 			button_img[1] = Image.FromFile("assets/reset_dead.png");
 			button_img[2] = Image.FromFile("assets/reset_chill.png");
 		}
 
+		//method responsible for setting up the top part of the UI
 		private void TopUISetup()
 		{
-			Point rfLoc;
-			Point rbLoc;
-			Point tdLoc;
+			//3 button locations
+			Point rfLoc;//remaining flags
+			Point rbLoc;//reset button
+			Point tdLoc;//time display
 
-			switch(Diff)
+			//depending on the difficulty, set the element locations
+			switch(Control.dif)
 			{
 				case Constants.Difficulty.Easy:
 					rfLoc = Constants.EASY_REMAINING_FLAGS_LABEL_LOCATION;
@@ -277,9 +292,12 @@ namespace Minesweeper
 					break;
 			}
 
+			//initialise the elements
 			remainingFlags_l = new Label();
 			remainingFlags_l.Text = Convert.ToString(remainingFlags);
 			remainingFlags_l.Location = rfLoc;
+			remainingFlags_l.Font = new Font("Impact",10f,FontStyle.Regular);
+			remainingFlags_l.ForeColor = Color.Green;
 
 			resetButton = new Button();
 			resetButton.Size = Constants.RESET_BUTTON_SIZE;
@@ -290,48 +308,56 @@ namespace Minesweeper
 			timer_display = new Label();
 			timer_display.Text = Convert.ToString(secondsPassed);
 			timer_display.Location = tdLoc;
+			timer_display.Font = new Font("Impact", 10f, FontStyle.Regular);
+			timer_display.ForeColor = Color.Green;
 		}
 
-		//method responsible for handling window closing
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
+		//method required to open the menu on game closing and dispose of the game window
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			base.OnFormClosing(e);
 
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
 				e.Cancel = true;//cancel the event
 				Control.curState = Constants.GameState.MainMenu;
-                Control.MenuForm.Show();//show menu window
-                this.Dispose();//hide current window
+				Control.MenuForm.Show();//show menu window
+				this.Dispose();//hide current window
 			}
-        }
+		}
 
+		//method responsible for setting the state 
 		protected override void OnShown(EventArgs e)
 		{
 			Control.curState = Constants.GameState.Game;
 			base.OnShown(e);
 		}
 
+		//event handler triggered when an empty tile is opened
 		protected void OpenEmptyTiles(object sender, EventArgs args)
 		{
 			OpenEmptyRecursive((Tile)sender);
+			//set all variables to not being processed
 			foreach(LinkedList<Tile> l in gameFieldTiles)
 				foreach(Tile t in l)
 					t.BeingProcessed = false;
 		}
 
+		//recursively loop through all neighbour empty tiles and open them
 		private void OpenEmptyRecursive(Tile tile)
 		{
 			if (!tile.isEmpty() && !tile.isMarked())
-			{
+			{//if tile is not empty, open it and return
 				tile.Open();
 				return;
 			}
-			else if (tile.BeingProcessed || tile.isMarked())
+			else if (tile.BeingProcessed || tile.isMarked())//if tile is marked and being processed, stop processing it
 				return;
 
+			//set tile to being processed
 			tile.BeingProcessed = true;
 
+			//process tiles in all 8 directions
 			if(tile.GridCoords.X - 1 > -1)
 				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y).ElementAt(tile.GridCoords.X-1));
 			if(tile.GridCoords.X - 1 > -1 && tile.GridCoords.Y - 1 > -1)
@@ -349,25 +375,33 @@ namespace Minesweeper
 			if (tile.GridCoords.X - 1 > -1 && tile.GridCoords.Y + 1 < gameFieldTiles.ElementAt(1).Count)
 				OpenEmptyRecursive(gameFieldTiles.ElementAt(tile.GridCoords.Y + 1).ElementAt(tile.GridCoords.X - 1));
 
+			//open the tile if its not marked and not a mine
 			if(!tile.isMarked() && !tile.isMine)
 				tile.Open();
 		}
 
+		//event handler for losing game (mine opened)
 		protected void MineOpened(object sender, EventArgs args)
 		{
-			timer.Enabled = false;
-			Control.curState = Constants.GameState.GameOver;
-			resetButton.Image = button_img[1];
+			timer.Enabled = false;//stop timer
+			Control.curState = Constants.GameState.GameOver;//change game state
+			resetButton.Image = button_img[1];//set reset button image
+			//open all the mines
 			foreach(Point p in mineCoords)
 			{
 				gameFieldTiles.ElementAt(p.Y).ElementAt(p.X).Open();
 			}
 		}
 
+		//event handler for a tile being opened
+		//checks for whether the game was won
 		protected void CheckWinCondition(object sender, EventArgs args)
 		{
-			if(!timer.Enabled)
+			//if timer is disabled - enable it
+			if (!timer.Enabled)
 				timer.Enabled = true;
+
+			//loop through all of the tiles, if any tile that is not a mine isn't open - game not won so return
 			foreach(LinkedList<Tile> l in gameFieldTiles)
 				foreach(Tile t in l)
 				{
@@ -375,56 +409,58 @@ namespace Minesweeper
 						return;
 				}
 
+			//if method still going, game is won
+			//change reset button, game state, stop timer
 			resetButton.Image = button_img[2];
 			Control.curState = Constants.GameState.GameOver;
 			timer.Enabled = false;
 
+			//calculate the score (mines per second * 100 to avoid floating point) 
 			int score =(int)((float)mines / secondsPassed * 100);
 			
+			//if the score achieved is a highscore, ask for player's name and add it to the table
 			if (Control.records.isHighscore(score))
 			{
 				string text = "You set a new highscore of " + score + ".\nPlease, enter your name:";
-				string name = Microsoft.VisualBasic.Interaction.InputBox(text, "New highscore set!", "unknown");
+				string name = Microsoft.VisualBasic.Interaction.InputBox(text, "New highscore set!", "unknown");//visual basic input form, as c# doesn't have it's own input forms
 				Control.records.addHighscore(score, name);
-				Control.records.saveHighscores();
+				Control.records.saveHighscores();//save highscores to a file
 			}
 
 		}
 
+		//approve that the tile can be marked
 		protected void ApproveTileMark(object sender, EventArgs args)
 		{
 			Tile temp = (Tile)sender;
-
+			//if tile is not already marked
 			if (!temp.isMarked())
 			{
 				if (remainingFlags > 0)
-				{
+				{//if there are remaining flags, mark the tile and update remaining flags
 					temp.Mark();
 					remainingFlags--;
 				}
 			}
 			else
-			{
+			{//if tile is already mark, remove the flag and update remaining flags
 				temp.Mark();
 				remainingFlags++;
 			}
-			remainingFlags_l.Text = Convert.ToString(remainingFlags);
+			remainingFlags_l.Text = Convert.ToString(remainingFlags);//update the remaining flags display
 		}
 
+		//event handler for timer to update timer display
 		protected void TimerTick(object sender, EventArgs args)
 		{
 			secondsPassed++;
 			timer_display.Text = Convert.ToString(secondsPassed);
 		}
 
+		//event handler for reset button
 		protected void resetGame(object sender, EventArgs args)
 		{
 			Control.ResetGame();
-		}
-
-		protected override void OnFormClosed(FormClosedEventArgs e)
-		{
-			base.OnFormClosed(e);
 		}
 	}
 
